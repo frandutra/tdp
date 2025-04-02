@@ -1,0 +1,32 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; 
+  }
+
+  .table-custom {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-custom th {
+    background-color: #f3f4f6;
+    color: #4b5563;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  .table-custom td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .table-custom tr:hover {
+    background-color: #e5e7eb;
+  }
+  
+
+
+  

@@ -1,0 +1,64 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String      @id @default(uuid())
+  firstName String
+  lastName  String
+  birthDate DateTime
+  dni       String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cryptos   Cryptocurrency[]
+  alerts    CryptoAlert[]
+  alertHistory AlertHistory[] @relation("UserToAlertHistory")
+}
+
+model Cryptocurrency {
+  id        String   @id
+  userId    String
+  name      String
+  symbol    String
+  price     Float
+  trend     Float
+  user      User     @relation(fields: [userId], references: [id])
+  alerts    CryptoAlert[]
+
+  @@unique([id, userId])
+}
+
+model CryptoAlert {
+  id                  String      @id @default(uuid())
+  userId              String  
+  cryptoId            String
+  thresholdPercentage Float
+  isActive            Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  user                User        @relation(fields: [userId], references: [id])
+  cryptocurrency      Cryptocurrency @relation(fields: [cryptoId, userId], references: [id, userId])
+  history            AlertHistory[] @relation("AlertToCryptoAlert")
+
+  @@index([userId])
+  @@index([cryptoId, userId])
+}
+
+model AlertHistory {
+  id        String      @id @default(uuid())
+  alertId   String
+  userId    String
+  price     Float
+  createdAt DateTime    @default(now())
+  alert     CryptoAlert @relation("AlertToCryptoAlert", fields: [alertId], references: [id], onDelete: Cascade)
+  user      User        @relation("UserToAlertHistory", fields: [userId], references: [id])
+
+  @@index([alertId, userId])
+}
